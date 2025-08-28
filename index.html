@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>English Word Game</title>
+  <!-- Link to the core stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!--
+    The application is composed of three screens contained within a single HTML file.  
+    Visibility is toggled via the `.hidden` class defined in the stylesheet.  
+    LocalStorage is leveraged to persist the user's total score between sessions.
+  -->
+  <div id="app">
+    <!-- Start Screen -->
+    <div id="start-screen" class="screen">
+      <h1 class="title">English Word Game</h1>
+      <div class="form-group">
+        <label for="level-select">Choose Level:</label>
+        <select id="level-select" class="select">
+          <option value="A1">A1</option>
+          <option value="A2">A2</option>
+          <option value="B1">B1</option>
+          <option value="B2">B2</option>
+          <option value="C1">C1</option>
+          <option value="C2">C2</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="length-select">Word Length:</label>
+        <select id="length-select" class="select">
+          <!-- Populated in script -->
+        </select>
+      </div>
+      <button id="start-btn" class="primary-btn">Start Game</button>
+      <div id="total-score-display" class="score-display"></div>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="game-screen" class="screen hidden">
+      <div id="game-info" class="game-info">
+        <div id="game-settings" class="game-settings"></div>
+        <div id="total-score-game" class="score-display"></div>
+        <div id="score-display" class="score-display"></div>
+      </div>
+      <!-- Game board will be generated here -->
+      <div id="board-container" class="board-container"></div>
+      <!-- On-screen keyboard -->
+      <div id="keyboard-container" class="keyboard-container"></div>
+      <!-- Hint panel will be populated in script -->
+      <div id="hint-panel" class="hint-panel"></div>
+      <div id="hint-output" class="hint-output"></div>
+    </div>
+
+    <!-- Win Screen -->
+    <div id="win-screen" class="screen hidden">
+      <h2 class="title">Congratulations!</h2>
+      <p id="win-message">You guessed the word!</p>
+      <p>Total Points: <span id="win-points"></span></p>
+      <button id="next-btn" class="primary-btn">Next Game</button>
+    </div>
+  </div>
+
+  <!-- Core game logic -->
+  <script src="script.js"></script>
+</body>
+</html>

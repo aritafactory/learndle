@@ -1,0 +1,314 @@
+/*
+  This stylesheet defines a dark, greyscale aesthetic for the game.  
+  The palette uses subtle contrasts so that coloured feedback (orange, green) stands out.  
+  The layout is responsive and fills the viewport, maintaining a pleasing aspect ratio on most screens.
+*/
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #0e0e0e;
+  color: #e0e0e0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Container encapsulating all screens */
+#app {
+  width: 100%;
+  max-width: 900px;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Generic screen styles */
+.screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.hidden {
+  display: none;
+}
+
+.title {
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 2rem;
+  color: #ffffff;
+}
+
+.form-group {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  max-width: 300px;
+}
+
+label {
+  margin-bottom: 4px;
+  font-weight: bold;
+}
+
+.select {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 4px;
+  border: 1px solid #444;
+  background-color: #202020;
+  color: #e0e0e0;
+  appearance: none;
+}
+
+.primary-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  background-color: #444;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background-color 0.2s ease;
+}
+
+.primary-btn:hover {
+  background-color: #666;
+}
+
+.score-display {
+  margin-top: 10px;
+  font-size: 1rem;
+  color: #aaaaaa;
+}
+
+/* Game board styles */
+.board-container {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.row {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.cell {
+  width: 45px;
+  height: 45px;
+  border: 2px solid #444;
+  margin: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  font-weight: bold;
+  user-select: none;
+}
+
+/* Cell states */
+.cell.correct {
+  background-color: #0f5132; /* dark green */
+  border-color: #0f5132;
+  color: #fff;
+}
+.cell.present {
+  background-color: #66410f; /* dark orange */
+  border-color: #66410f;
+  color: #fff;
+}
+.cell.absent {
+  background-color: #333;
+  border-color: #333;
+  color: #777;
+}
+
+/* Game information */
+.game-info {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.game-settings {
+  font-size: 0.9rem;
+  color: #888;
+}
+
+/* Keyboard styling */
+.keyboard-container {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.keyboard-row {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 5px;
+}
+
+.key {
+  background-color: #2a2a2a;
+  color: #ddd;
+  border: none;
+  border-radius: 4px;
+  margin: 3px;
+  padding: 10px;
+  min-width: 40px;
+  text-align: center;
+  font-size: 1rem;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s ease;
+}
+
+.key:hover {
+  background-color: #555;
+}
+
+.key.correct {
+  background-color: #0f5132;
+  color: #fff;
+}
+
+.key.present {
+  background-color: #66410f;
+  color: #fff;
+}
+
+.key.absent {
+  background-color: #333;
+  color: #777;
+}
+
+/* Style for special keys like Enter and Backspace */
+.key.meta {
+  min-width: 56px;
+  font-weight: 600;
+}
+
+/* Hint panel styling */
+.hint-panel {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr)); /* 6 в ряд */
+  gap: 8px;
+}
+
+.hint-btn {
+  width: 100%;                 /* растягиваем по колонке */
+  min-height: 56px;            /* одинаковая высота */
+  text-align: left;            /* как на примере */
+  padding: 10px 12px;
+  display: flex;
+  border: none;
+  border-radius: 4px;               /* две строки: текст + стоимость */
+  flex-direction: column;
+  justify-content: center;
+  background-color: #2a2a2a;
+  color: #ddd;
+}
+
+.hint-btn:hover {
+  background-color: #555;
+}
+.hint-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.hint-btn .cost {
+  display: block;
+  font-size: 0.8rem;
+  color: #888;
+  margin-top: 2px;
+}
+
+/* Hint output */
+.hint-output {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  color: #aaa;
+  min-height: 1.2rem;
+  text-align: center;
+  max-width: 80%;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 6px;
+  row-gap: 6px;
+}
+
+.hints-list{display:none;} /* removed unused hints list */
+.hint-row{padding:8px 10px;border:1px solid var(--c-border,#2a2a2a);border-radius:10px;background:var(--c-surface-2,#161616);font-size:14px;line-height:1.3}
+.hint-btn[disabled]{opacity:.5;cursor:not-allowed}
+#keyboard-container{margin-top:auto; padding-bottom:12px;}
+
+/* Win screen styling */
+#win-screen {
+  padding: 40px 20px;
+  box-sizing: border-box;
+}
+
+#win-screen p {
+  font-size: 1.2rem;
+  margin: 10px 0;
+}
+
+@media (max-width: 600px) {
+  .cell {
+    width: 35px;
+    height: 35px;
+    font-size: 1.2rem;
+  }
+  .key {
+    padding: 8px;
+    min-width: 28px;
+    font-size: 0.8rem;
+  }
+  .hint-btn {
+    min-width: 120px;
+    font-size: 0.75rem;
+  }
+  .hint-panel { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+
+/* базовое — даём контейнерам 100% высоты без vh */
+html, body { height: 100%; margin: 0; }
+#app { height: 100%; }
+
+/* любой экран: растягивается на доступные 100% */
+.screen { display: none; min-height: 100%; width: 100%; }
+/* показываем активный экран */
+.screen:not(.hidden) { display: flex; }
+
+/* старт/финиш — по центру без position/vh */
+#start-screen, #win-screen { justify-content: center; align-items: center; }
+
+/* игра — колонкой: инфо | поле | подсказки | клавиатура */
+#game-screen { flex-direction: column; min-height: fit-content; }
+
+/* поле всегда по вертикальному центру экрана игры */
+#board-container {
+  flex: 1;                       /* занимает «середину» */
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* подсказки и клавиатура — внизу, но без толчков страницы */
+#hint-output { max-height: 140px; overflow: auto; margin-top: 8px; }
+/* unified keyboard container styling defined earlier */
+
