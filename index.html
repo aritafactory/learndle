@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>English Word Game</title>
+  <title>Learndle</title>
   <!-- Link to the core stylesheet -->
   <link rel="stylesheet" href="style.css" />
+  <script src="https://yandex.ru/games/sdk/v2"></script>
 </head>
 <body>
   <!--
@@ -16,9 +17,9 @@
   <div id="app">
     <!-- Start Screen -->
     <div id="start-screen" class="screen">
-      <h1 class="title">English Word Game</h1>
+      <img src="learndle-logo-2.png" alt="LEARNDLE Logo" class="logo" style="margin-bottom: 4rem; width: 30rem;"> </img>
       <div class="form-group">
-        <label for="level-select">Choose Level:</label>
+        <label for="level-select">Уровень:</label>
         <select id="level-select" class="select">
           <option value="A1">A1</option>
           <option value="A2">A2</option>
@@ -29,20 +30,29 @@
         </select>
       </div>
       <div class="form-group">
-        <label for="length-select">Word Length:</label>
+        <label for="length-select">Букв в слове:</label>
         <select id="length-select" class="select">
           <!-- Populated in script -->
         </select>
       </div>
-      <button id="start-btn" class="primary-btn">Start Game</button>
-      <div id="total-score-display" class="score-display"></div>
+      <button id="start-btn" class="primary-btn" style="margin-bottom: 1rem;">Играть!</button>
+      <div class="score-help">
+        <div id="total-score-display" class="score-display"></div>
+        <button type="button" class="icon-btn help-btn" aria-label="How to play" title="How to play">?</button>
+        <button type="button" class="ad-btn" title="Watch add">+1000 очков</button>
+      </div>
     </div>
 
     <!-- Game Screen -->
     <div id="game-screen" class="screen hidden">
       <div id="game-info" class="game-info">
-        <div id="game-settings" class="game-settings"></div>
-        <div id="total-score-game" class="score-display"></div>
+        <button type="button" class="primary-btn home-btn" aria-label="Home" title="Home">🏠︎</button>
+        <div id="game-settings" class="score-display"></div>
+        <div class="score-help">
+          <div id="total-score-game" class="score-display"></div>
+          <button type="button" class="icon-btn help-btn" aria-label="How to play" title="How to play">?</button>
+          <button type="button" class="ad-btn" title="Watch add">+1000 очков</button>
+        </div>
         <div id="score-display" class="score-display"></div>
       </div>
       <!-- Game board will be generated here -->
@@ -56,14 +66,72 @@
 
     <!-- Win Screen -->
     <div id="win-screen" class="screen hidden">
-      <h2 class="title">Congratulations!</h2>
-      <p id="win-message">You guessed the word!</p>
-      <p>Total Points: <span id="win-points"></span></p>
-      <button id="next-btn" class="primary-btn">Next Game</button>
+      <h2 class="title">Поздравляем!</h2>
+      <p id="win-message">Все буквы открыты! Слово было <span class="icon-btn" style="cursor: pointer;">PEN</span></p>
+      <div class="score-help" style="margin-bottom: 15px;">
+        <p>Всего очков: <span id="win-points">65095</span></p><!-- Home button to return to the start screen -->
+        <button type="button" class="icon-btn help-btn" aria-label="How to play" title="How to play">?</button>
+        <button type="button" class="ad-btn" title="Watch add">+1000 очков</button>
+      </div>
+      <div class="score-help">
+        <button type="button" class="primary-btn home-btn" aria-label="Home" title="Home">🏠︎</button>
+        <button id="next-btn" class="primary-btn">Дальше</button>
+      </div>
+    </div>
+
+  <!-- Unified modal overlay -->
+  <div id="modal-overlay" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modal-title">Как играть?</h3>
+        <button id="modal-close" type="button" class="icon-btn" aria-label="Close">×</button>
+      </div>
+      <div class="modal-body">
+        <!-- How to play screen -->
+        <div id="howto-screen" class="modal-screen">
+          <p>У вас есть 6 попыток, чтобы угадать скрытое слово. Цвета букв показывают ваш прогресс:</p>
+          <ul class="legend">
+            <li><span class="legend-box correct"></span> <strong>Правильное место</strong></li>
+            <li><span class="legend-box present"></span> <strong>В слове, но не на своем месте</strong></li>
+            <li><span class="legend-box absent"></span> <strong>Нет в слове</strong></li>
+          </ul>
+          <h4 class="section">Интерфейс:</h4>
+          <ul class="bullets">
+            <li>Используйте клавиатуру или экранные клавиши для ввода.</li>
+            <li>ENTER - для отправки слова, ⌫ - для удаления букв.</li>
+            <li>Использование подсказок тратит общие очки.</li>
+          </ul>
+          <h4 class="section">Подсказки:</h4>
+          <ul class="bullets">
+            <li><strong>Часть речи</strong> — показывает часть речи слова.</li>
+            <li><strong>Пример предложения</strong> — показывает пример использования с пропуском вместо слова.</li>
+            <li><strong>Синоним / Антоним</strong> — если есть.</li>
+            <li><strong>Определение</strong> — показывает определение слова.</li>
+            <li><strong>Показать буквы</strong> — показывает какие буквы есть в слове.</li>
+            <li><strong>Открыть букву</strong> — показывает и ставит на своё место случайную букву из слова; количество использований не ограничено, но цена растёт с каждым кликом.</li>
+          </ul>
+        </div>
+        <!-- Alert screen -->
+        <div id="alert-screen" class="modal-screen hidden">
+          <p id="alert-message"></p>
+        </div>
+        <!-- Word info screen -->
+        <div id="word-screen" class="modal-screen hidden">
+          <div id="word-content"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="modal-ok" type="button" class="primary-btn">ОК</button>
+      </div>
     </div>
   </div>
 
-  <!-- Core game logic -->
+  <!-- Core game logic (loaded after overlay to ensure DOM nodes are available) -->
   <script src="script.js"></script>
+
+  <!-- Additional ad integration logic. This script adds GameDistribution helpers,
+       reward button behaviour, ad prompts, credit accounting and telemetry. -->
+  <script src="ads.js"></script>
+</body>
 </body>
 </html>
