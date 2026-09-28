@@ -1,12 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Learndle</title>
+  <title>LEARNDLE</title>
   <!-- Link to the core stylesheet -->
   <link rel="stylesheet" href="style.css" />
-  <script src="https://yandex.ru/games/sdk/v2"></script>
 </head>
 <body>
   <!--
@@ -19,7 +18,7 @@
     <div id="start-screen" class="screen">
       <img src="learndle-logo-2.png" alt="LEARNDLE Logo" class="logo" style="margin-bottom: 4rem; width: 30rem;"> </img>
       <div class="form-group">
-        <label for="level-select">Уровень:</label>
+        <label for="level-select">Choose Level:</label>
         <select id="level-select" class="select">
           <option value="A1">A1</option>
           <option value="A2">A2</option>
@@ -30,16 +29,15 @@
         </select>
       </div>
       <div class="form-group">
-        <label for="length-select">Букв в слове:</label>
+        <label for="length-select">Word Length:</label>
         <select id="length-select" class="select">
           <!-- Populated in script -->
         </select>
       </div>
-      <button id="start-btn" class="primary-btn" style="margin-bottom: 1rem;">Играть!</button>
+      <button id="start-btn" class="primary-btn" style="margin-bottom: 1rem;">Start Game</button>
       <div class="score-help">
         <div id="total-score-display" class="score-display"></div>
         <button type="button" class="icon-btn help-btn" aria-label="How to play" title="How to play">?</button>
-        <button type="button" class="ad-btn" title="Watch add">+1000 очков</button>
       </div>
     </div>
 
@@ -51,7 +49,6 @@
         <div class="score-help">
           <div id="total-score-game" class="score-display"></div>
           <button type="button" class="icon-btn help-btn" aria-label="How to play" title="How to play">?</button>
-          <button type="button" class="ad-btn" title="Watch add">+1000 очков</button>
         </div>
         <div id="score-display" class="score-display"></div>
       </div>
@@ -66,16 +63,15 @@
 
     <!-- Win Screen -->
     <div id="win-screen" class="screen hidden">
-      <h2 class="title">Поздравляем!</h2>
-      <p id="win-message">Все буквы открыты! Слово было <span class="icon-btn" style="cursor: pointer;">PEN</span></p>
+      <h2 class="title">Congratulations!</h2>
+      <p id="win-message">All letters revealed! The word was <span class="icon-btn" style="cursor: pointer;">PEN</span></p>
       <div class="score-help" style="margin-bottom: 15px;">
-        <p>Всего очков: <span id="win-points">65095</span></p><!-- Home button to return to the start screen -->
+        <p>Total Points: <span id="win-points">65095</span></p><!-- Home button to return to the start screen -->
         <button type="button" class="icon-btn help-btn" aria-label="How to play" title="How to play">?</button>
-        <button type="button" class="ad-btn" title="Watch add">+1000 очков</button>
       </div>
       <div class="score-help">
         <button type="button" class="primary-btn home-btn" aria-label="Home" title="Home">🏠︎</button>
-        <button id="next-btn" class="primary-btn">Дальше</button>
+        <button id="next-btn" class="primary-btn">Next Game</button>
       </div>
     </div>
 
@@ -83,32 +79,32 @@
   <div id="modal-overlay" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
     <div class="modal">
       <div class="modal-header">
-        <h3 id="modal-title">Как играть?</h3>
+        <h3 id="modal-title">How to play</h3>
         <button id="modal-close" type="button" class="icon-btn" aria-label="Close">×</button>
       </div>
       <div class="modal-body">
         <!-- How to play screen -->
         <div id="howto-screen" class="modal-screen">
-          <p>У вас есть 6 попыток, чтобы угадать скрытое слово. Цвета букв показывают ваш прогресс:</p>
+          <p>You have 6 tries to guess the hidden word. Letter colors explain your progress:</p>
           <ul class="legend">
-            <li><span class="legend-box correct"></span> <strong>Правильное место</strong></li>
-            <li><span class="legend-box present"></span> <strong>В слове, но не на своем месте</strong></li>
-            <li><span class="legend-box absent"></span> <strong>Нет в слове</strong></li>
+            <li><span class="legend-box correct"></span> <strong>Correct spot</strong></li>
+            <li><span class="legend-box present"></span> <strong>In word but wrong spot</strong></li>
+            <li><span class="legend-box absent"></span> <strong>Not in the word</strong></li>
           </ul>
-          <h4 class="section">Интерфейс:</h4>
+          <h4 class="section">Interface</h4>
           <ul class="bullets">
-            <li>Используйте клавиатуру или экранные клавиши для ввода.</li>
-            <li>ENTER - для отправки слова, ⌫ - для удаления букв.</li>
-            <li>Использование подсказок тратит общие очки.</li>
+            <li>Use keyboard or on-screen keys to type.</li>
+            <li>ENTER submits, ⌫ deletes.</li>
+            <li>Total Points are shared and can be spent on hints.</li>
           </ul>
-          <h4 class="section">Подсказки:</h4>
+          <h4 class="section">Hints</h4>
           <ul class="bullets">
-            <li><strong>Часть речи</strong> — показывает часть речи слова.</li>
-            <li><strong>Пример предложения</strong> — показывает пример использования с пропуском вместо слова.</li>
-            <li><strong>Синоним / Антоним</strong> — если есть.</li>
-            <li><strong>Определение</strong> — показывает определение слова.</li>
-            <li><strong>Показать буквы</strong> — показывает какие буквы есть в слове.</li>
-            <li><strong>Открыть букву</strong> — показывает и ставит на своё место случайную букву из слова; количество использований не ограничено, но цена растёт с каждым кликом.</li>
+            <li><strong>Part of Speech</strong> — shows part of speech.</li>
+            <li><strong>Example Sentence</strong> — word in a sentence.</li>
+            <li><strong>Synonym / Antonym</strong> — if available.</li>
+            <li><strong>Definition</strong> — word definition.</li>
+            <li><strong>Scramble Letters</strong> — shuffle answer letters.</li>
+            <li><strong>Reveal Letter</strong> — if no synonym/antonym, opens a random letter; cost increases with each use.</li>
           </ul>
         </div>
         <!-- Alert screen -->
@@ -121,7 +117,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button id="modal-ok" type="button" class="primary-btn">ОК</button>
+        <button id="modal-ok" type="button" class="primary-btn">Got it!</button>
       </div>
     </div>
   </div>

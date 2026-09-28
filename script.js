@@ -109,8 +109,8 @@ function shuffleWord(w) {
 
   function updateTotalPointsViews() {
     const xp = getXP();
-    if (totalScoreDisplay) totalScoreDisplay.textContent = `Всего очков: ${xp}`;
-    if (totalScoreGame)    totalScoreGame.textContent    = `Всего очков: ${xp}`;
+    if (totalScoreDisplay) totalScoreDisplay.textContent = `Total Points: ${xp}`;
+    if (totalScoreGame)    totalScoreGame.textContent    = `Total Points: ${xp}`;
     if (winPoints)         winPoints.textContent         = xp;
   }
 
@@ -124,7 +124,7 @@ function shuffleWord(w) {
       const [mRes, wRes] = await Promise.all([
         fetch('meta.json'), fetch('words.json')
       ]);
-      if(!mRes.ok || !wRes.ok) throw new Error('Не удалось загрузить словари');
+      if(!mRes.ok || !wRes.ok) throw new Error('Failed to load dictionaries');
 
       META = await mRes.json();
       WORDS_ALL = await wRes.json();
@@ -193,11 +193,6 @@ function shuffleWord(w) {
     // Загружаем словари и связываем Level ↔ Length
     loadDictionaries().then(()=>{
       populateLengthsForLevel(levelSel.value);
-      if (!window.__LEARNDLE_CORE_READY) {
-      window.__LEARNDLE_CORE_READY = true;
-      window.dispatchEvent(new Event('LEARNDLE_CORE_READY'));
-}
-
     });
 
     levelSel.addEventListener('change', ()=>{
@@ -267,7 +262,7 @@ document.addEventListener('keydown', (e) => {
   // универсальная кнопка
   const modalOkBtn = document.getElementById('modal-ok');
   if (modalOkBtn) {
-    modalOkBtn.textContent = opts.okText || 'ОК';
+    modalOkBtn.textContent = opts.okText || 'Got it!';
     modalOkBtn.onclick = () => {
       hideModal();
       if (typeof opts.onOk === 'function') opts.onOk();
@@ -277,7 +272,7 @@ document.addEventListener('keydown', (e) => {
   // показать нужный экран
   switch (type) {
     case 'howto':
-      if (modalTitle) modalTitle.textContent = 'Как играть?';
+      if (modalTitle) modalTitle.textContent = 'How to play';
       howtoScreen?.classList.remove('hidden');
       break;
 
@@ -287,7 +282,7 @@ document.addEventListener('keydown', (e) => {
 
     case 'word':
       wordScreen?.classList.remove('hidden');
-      if (modalTitle) modalTitle.textContent = 'Информация о слове';
+      if (modalTitle) modalTitle.textContent = 'Word Info';
       buildWordInfo((opts.word || '').toLowerCase());
       break;
   }
@@ -304,13 +299,13 @@ document.addEventListener('keydown', (e) => {
       const ex  = meta['Example sentence'] || meta['Example Sentence'] || '—';
       const syn = meta['Synonym'] || '—';
       const ant = meta['Antonym'] || '—';
-      html += `<p><strong>Часть речи:</strong> ${pos || '—'}</p>`;
-      html += `<p><strong>Определение:</strong> ${def || '—'}</p>`;
-      html += `<p><strong>Пример предложения:</strong> ${ex || '—'}</p>`;
-      html += `<p><strong>Синоним:</strong> ${syn || '—'}</p>`;
-      html += `<p><strong>Антоним:</strong> ${ant || '—'}</p>`;
+      html += `<p><strong>Part of Speech:</strong> ${pos || '—'}</p>`;
+      html += `<p><strong>Definition:</strong> ${def || '—'}</p>`;
+      html += `<p><strong>Example:</strong> ${ex || '—'}</p>`;
+      html += `<p><strong>Synonym:</strong> ${syn || '—'}</p>`;
+      html += `<p><strong>Antonym:</strong> ${ant || '—'}</p>`;
     } else {
-      html += `<p>Нет информации по слову.</p>`;
+      html += `<p>No data available.</p>`;
     }
     wordContent.innerHTML = html;
     // НЕ обязательный вариант
@@ -406,7 +401,7 @@ document.addEventListener('keydown', (e) => {
   function revealWin(){
     const total = getXP();
     setXP(total);
-    if(winMessage) winMessage.innerHTML = `Все буквы открыты! Слово было <span class="icon-btn">${state.answer.toUpperCase()}</span>`;
+    if(winMessage) winMessage.innerHTML = `All letters revealed! The word was <span class="icon-btn">${state.answer.toUpperCase()}</span>`;
     if(winPoints) winPoints.textContent = total;
     show(winScreen);
     // attach click to show word info
@@ -433,7 +428,7 @@ document.addEventListener('keydown', (e) => {
     try{
       state.answer = chooseAnswer(level, len);
     }catch(e){
-      showModal('alert', { title: 'Нет слов', message: 'Попробуй другой уровень или слова другой длины.' });
+      showModal('alert', { title: 'No words', message: 'Try another level or word length.' });
       return;
     }
     // Reset round variables
@@ -473,7 +468,7 @@ document.addEventListener('keydown', (e) => {
       const arr = WORDS[level][t][len] || [];
       if(arr.length) return arr[Math.floor(Math.random()*arr.length)].toLowerCase();
     }
-    throw new Error('Нет слов для выбранных параметров');
+    throw new Error('No words for this selection');
   }
 
   function buildBoard(len){
@@ -516,8 +511,8 @@ document.addEventListener('keydown', (e) => {
 }
 
   function setInfo(){
-  gameSettings.textContent = `${state.level} • букв в слове: ${state.len}`;
-  scoreDisplay.textContent = `Текущая игра: ${state.points} очков (x${state.mult})`;
+  gameSettings.textContent = `${state.level} • ${state.len} letters`;
+  scoreDisplay.textContent = `Current Game: ${state.points} points (x${state.mult})`;
   }
 
 
@@ -638,21 +633,21 @@ document.addEventListener('keydown', (e) => {
     const base = SCORE[state.level] ? SCORE[state.level][0] : 0;
     // Compose list of hint definitions
     const list = [];
-    list.push({type:'pos', label:'Часть речи', text: pos, cost: base * 1});
-    list.push({type:'ex',  label:'Пример предложения', text: ex, cost: base * 2});
+    list.push({type:'pos', label:'Part of Speech', text: pos, cost: base * 1});
+    list.push({type:'ex',  label:'Example Sentence', text: ex, cost: base * 2});
    // стало: объединяем в одну кнопку
     if (hasAnt || hasSyn) {
       const both  = hasAnt && hasSyn;
-      const label = both ? 'Синоним / Антоним' : (hasAnt ? 'Антоним' : 'Синоним');
+      const label = both ? 'Antonym/Synonym' : (hasAnt ? 'Antonym' : 'Synonym');
       const text  = both ? `${ant} / ${syn}` : (hasAnt ? ant : syn);
       list.push({ type: 'rel', label, text, cost: base * 3 });
     }
     // Reveal letter: include if either synonym or antonym missing
-    list.push({type: 'rev', label: 'Открыть букву', cost: base * 4});
+    list.push({type: 'rev', label: 'Reveal Letter', cost: base * 4});
     // Definition always
-    list.push({type:'def', label:'Определение', text: def, cost: base * 5});
+    list.push({type:'def', label:'Definition', text: def, cost: base * 5});
     // Scramble always
-    list.push({type:'scr', label:'Показать буквы', text: null, cost: base * 6});
+    list.push({type:'scr', label:'Scramble Letters', text: null, cost: base * 6});
 
     // Build buttons for each hint
     list.forEach(h => {
@@ -717,7 +712,7 @@ document.addEventListener('keydown', (e) => {
 
 function useHint(type, cost, text=''){
   const cur = getXP();
-  if (cur < cost) { if (hintOutput) hintOutput.textContent = 'Недостаточно очков.'; return; }
+  if (cur < cost) { if (hintOutput) hintOutput.textContent = 'Not enough points.'; return; }
   setXP(cur - cost);
   updateTotalPointsViews();
 
@@ -751,8 +746,8 @@ function submit(){
   const filled = rowArr.filter(ch => ch && /^[A-Z]$/.test(ch)).length;
   if (filled < state.len) {
     showModal('alert', {
-      title: 'Заполните слово',
-      message: `Введите слово длиной: ${state.len}`
+      title: 'Incomplete guess',
+      message: `Enter a ${state.len}-letter word.`
     });
     return;
   }
@@ -760,16 +755,16 @@ function submit(){
   const guess = rowArr.join('').toLowerCase();
   if (/[^a-z]/.test(guess)) {
     showModal('alert', {
-      title: 'Недопустимые символы',
-      message: 'Используйте только буквы A-Z.'
+      title: 'Invalid input',
+      message: 'Use A–Z letters only.'
     });
     return;
   }
 
   if (typeof isValidGuess === 'function' && !isValidGuess(guess)) {
     showModal('alert', {
-      title: 'Нет в словаре',
-      message: 'Этого слова нет в словаре, попробуйте другое.'
+      title: 'Not in word list',
+      message: 'This word is not in the dictionary.'
     });
     return;
   }
@@ -784,7 +779,7 @@ function submit(){
     setXP(total);
     // Build message with clickable word
     if(winMessage){
-      winMessage.innerHTML = `Вы отгадали слово \<span class="icon-btn">${state.answer.toUpperCase()}</span>\ Вы получили ${earned} очков.`;
+      winMessage.innerHTML = `You guessed the word \<span class="icon-btn">${state.answer.toUpperCase()}</span>\ You earned ${earned} points.`;
     }
     if(winPoints) winPoints.textContent  = total;
     show(winScreen);
@@ -792,7 +787,7 @@ function submit(){
     const span = winMessage ? winMessage.querySelector('.icon-btn') : null;
     if(span){
       span.style.cursor = 'pointer';
-      span.onclick = () => showModal('word', { word: state.answer, nextText: 'Дальше', onNext: startSameLevelRound });
+      span.onclick = () => showModal('word', { word: state.answer, nextText: 'Next', onNext: startSameLevelRound });
     }
     return;
   }
@@ -809,8 +804,8 @@ function submit(){
   }
   if (state.tries <= 0){
     showModal('alert', {
-      title: 'Не осталось попыток',
-      message: `Словом было "${state.answer.toUpperCase()}".`,
+      title: 'No tries left',
+      message: `The word was "${state.answer.toUpperCase()}"`,
       onOk: () => {
         updateTotalPointsViews();
         show(startScreen);
@@ -827,7 +822,7 @@ function submit(){
     try{
       state.answer = chooseAnswer(state.level, state.len);
     }catch(e){
-      showModal('alert', { title: 'Нет слов', message: 'Выберите другой уровень или длину слова.' });
+      showModal('alert', { title: 'No words', message: 'Try another level or word length.' });
       return;
     }
     // reset round

@@ -3,7 +3,6 @@
   The palette uses subtle contrasts so that coloured feedback (orange, green) stands out.  
   The layout is responsive and fills the viewport, maintaining a pleasing aspect ratio on most screens.
 */
-
 body {
   margin: 0;
   padding: 0;
@@ -13,10 +12,6 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
 }
 
 /* Container encapsulating all screens */
