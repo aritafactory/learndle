@@ -264,6 +264,7 @@ function shuffleWord(w) {
     // Загружаем словари и связываем Level ↔ Length
     loadDictionaries().then(()=>{
       populateLengthsForLevel(levelSel.value);
+      startBtn.disabled = false;
       if (!window.__LEARNDLE_CORE_READY) {
       window.__LEARNDLE_CORE_READY = true;
       window.dispatchEvent(new Event('LEARNDLE_CORE_READY'));
