@@ -263,13 +263,13 @@ function shuffleWord(w) {
     }
 
     // Загружаем словари и связываем Level ↔ Length
-    loadDictionaries().then(()=>{
+    loadDictionaries().then(() => {
       populateLengthsForLevel(levelSel.value);
-      startBtn.disabled = false;
+      // Platform bootstrap owns Play activation after LoadingAPI.ready (or local fallback).
       if (!window.__LEARNDLE_CORE_READY) {
-      window.__LEARNDLE_CORE_READY = true;
-      window.dispatchEvent(new Event('LEARNDLE_CORE_READY'));
-}
+        window.__LEARNDLE_CORE_READY = true;
+        window.dispatchEvent(new Event('LEARNDLE_CORE_READY'));
+      }
     }).catch(() => {
       startBtn.disabled = true;
     });
