@@ -1,4 +1,39 @@
 (() => {
+  const TRANSLATIONS = {
+    en: {
+      level: 'Level:', wordLength: 'Letters in the word:', play: 'Play!', next: 'Next', congratulations: 'Congratulations!',
+      totalPoints: 'Total points: {value}', totalPointsLabel: 'Total points:', gameSettings: '{level} • letters: {length}', currentGame: 'Current game: {points} points (x{mult})', pointsShort: 'pts',
+      howTo: 'How to play?', wordInfo: 'Word information', ok: 'OK', adReward: '▶ Ad · +1000 points', adLoading: 'Loading ad…',
+      howtoIntro: 'You have 6 attempts to guess the hidden word. Letter colors show your progress:', correctPlace: 'Correct place', wrongPlace: 'In the word, wrong place', notInWord: 'Not in the word',
+      interface: 'Controls:', keyboardHelp: 'Use your keyboard or the on-screen keys.', enterHelp: 'ENTER submits a word, ⌫ removes a letter.', hintsCostHelp: 'Hints spend your total points.', hints: 'Hints:',
+      posHelp: '<strong>Part of speech</strong> — shows the word\'s part of speech.', exampleHelp: '<strong>Example sentence</strong> — shows usage with the word omitted.', relationHelp: '<strong>Synonym / Antonym</strong> — when available.', definitionHelp: '<strong>Definition</strong> — shows the definition.', lettersHelp: '<strong>Show letters</strong> — marks the letters contained in the word.', revealHelp: '<strong>Reveal a letter</strong> — places a random letter; it can be reused, but its cost increases.',
+      partOfSpeech: 'Part of speech', example: 'Example sentence', synonym: 'Synonym', antonym: 'Antonym', synonymAntonym: 'Synonym / Antonym', definition: 'Definition', revealLetter: 'Reveal a letter', showLetters: 'Show letters',
+      noInfo: 'No information is available for this word.', fillWord: 'Complete the word', enterLength: 'Enter a {length}-letter word.', invalidChars: 'Invalid characters', onlyLetters: 'Use letters A-Z only.', notFound: 'Not in dictionary', tryAnother: 'This word is not in the dictionary. Try another one.',
+      noTries: 'No attempts left', wordWas: 'The word was “{word}”.', noWords: 'No words', chooseAnother: 'Choose another level or word length.', tryAnotherSetting: 'Try another level or word length.',
+      guessed: 'You guessed <span class="icon-btn">{word}</span>. You earned {points} points.', revealed: 'All letters are revealed! The word was <span class="icon-btn">{word}</span>.',
+      adPromptTitle: 'Continue playing', adPromptText: 'Watch a short ad for free or skip it for 1000 points.', watchAd: '▶ Watch ad', skipPoints: 'Skip · −1000 points'
+    },
+    ru: {
+      level: 'Уровень:', wordLength: 'Букв в слове:', play: 'Играть!', next: 'Дальше', congratulations: 'Поздравляем!',
+      totalPoints: 'Всего очков: {value}', totalPointsLabel: 'Всего очков:', gameSettings: '{level} • букв в слове: {length}', currentGame: 'Текущая игра: {points} очков (x{mult})', pointsShort: 'очк.',
+      howTo: 'Как играть?', wordInfo: 'Информация о слове', ok: 'ОК', adReward: '▶ Реклама · +1000 очков', adLoading: 'Загрузка рекламы…',
+      howtoIntro: 'У вас есть 6 попыток, чтобы угадать скрытое слово. Цвета букв показывают ваш прогресс:', correctPlace: 'Правильное место', wrongPlace: 'В слове, но не на своем месте', notInWord: 'Нет в слове',
+      interface: 'Интерфейс:', keyboardHelp: 'Используйте клавиатуру или экранные клавиши для ввода.', enterHelp: 'ENTER — для отправки слова, ⌫ — для удаления букв.', hintsCostHelp: 'Использование подсказок тратит общие очки.', hints: 'Подсказки:',
+      posHelp: '<strong>Часть речи</strong> — показывает часть речи слова.', exampleHelp: '<strong>Пример предложения</strong> — показывает пример использования с пропуском вместо слова.', relationHelp: '<strong>Синоним / Антоним</strong> — если есть.', definitionHelp: '<strong>Определение</strong> — показывает определение слова.', lettersHelp: '<strong>Показать буквы</strong> — показывает, какие буквы есть в слове.', revealHelp: '<strong>Открыть букву</strong> — ставит на место случайную букву; цена растёт с каждым использованием.',
+      partOfSpeech: 'Часть речи', example: 'Пример предложения', synonym: 'Синоним', antonym: 'Антоним', synonymAntonym: 'Синоним / Антоним', definition: 'Определение', revealLetter: 'Открыть букву', showLetters: 'Показать буквы',
+      noInfo: 'Нет информации по слову.', fillWord: 'Заполните слово', enterLength: 'Введите слово длиной: {length}', invalidChars: 'Недопустимые символы', onlyLetters: 'Используйте только буквы A-Z.', notFound: 'Нет в словаре', tryAnother: 'Этого слова нет в словаре, попробуйте другое.',
+      noTries: 'Не осталось попыток', wordWas: 'Словом было «{word}».', noWords: 'Нет слов', chooseAnother: 'Выберите другой уровень или длину слова.', tryAnotherSetting: 'Попробуйте другой уровень или слова другой длины.',
+      guessed: 'Вы отгадали слово <span class="icon-btn">{word}</span>. Вы получили {points} очков.', revealed: 'Все буквы открыты! Слово было <span class="icon-btn">{word}</span>.',
+      adPromptTitle: 'Продолжить игру', adPromptText: 'Посмотрите короткую рекламу бесплатно или пропустите её за 1000 очков.', watchAd: '▶ Смотреть рекламу', skipPoints: 'Пропустить · −1000 очков'
+    }
+  };
+  let language = 'en';
+  const t = (key, vars = {}) => {
+    let value = TRANSLATIONS[language][key] || TRANSLATIONS.en[key] || key;
+    Object.entries(vars).forEach(([name, replacement]) => { value = value.replaceAll(`{${name}}`, replacement); });
+    return value;
+  };
+
   // ---------- Small answer bank (demo) ----------
   const WORDS = {
     A1:{General:{3:['sun','cat','bus','sea'],4:['home','book','blue','good'],5:['apple','chair','smile','drink'],6:['orange','little']},
@@ -20,6 +55,10 @@ let META_MAP = new Map();
 
   // ---------- State ----------
   let state = { level:'A1', len:5, theme:'General', answer:'', row:0, col:0, grid:[], tries:6, mult:6, points:0 };
+  let inputPaused = false;
+  let roundActive = false;
+  let roundEndReported = false;
+  let roundTransitionPending = false;
 
   // Reveal hint configuration and state
   const REVEAL_BASE_COST = { A1:40, A2:80, B1:200, B2:240, C1:440, C2:480 };
@@ -95,6 +134,18 @@ function addHintItem(type, label, text) {
   row.innerHTML = `<strong>${label}:</strong> ${String(text || '—')}`;
   hintOutput.appendChild(row);
   revealedHints.add(type);
+  fitGameScreen();
+}
+
+function fitGameScreen() {
+  if (!gameScreen || gameScreen.classList.contains('hidden')) return;
+  gameScreen.style.zoom = '1';
+  requestAnimationFrame(() => {
+    const availableHeight = document.getElementById('app')?.clientHeight || window.innerHeight;
+    const availableWidth = document.getElementById('app')?.clientWidth || window.innerWidth;
+    const scale = Math.min(1, availableHeight / gameScreen.scrollHeight, availableWidth / gameScreen.scrollWidth);
+    gameScreen.style.zoom = String(Math.max(0.45, scale));
+  });
 }
 
 function shuffleWord(w) {
@@ -109,9 +160,29 @@ function shuffleWord(w) {
 
   function updateTotalPointsViews() {
     const xp = getXP();
-    if (totalScoreDisplay) totalScoreDisplay.textContent = `Всего очков: ${xp}`;
-    if (totalScoreGame)    totalScoreGame.textContent    = `Всего очков: ${xp}`;
+    if (totalScoreDisplay) totalScoreDisplay.textContent = t('totalPoints', { value: xp });
+    if (totalScoreGame)    totalScoreGame.textContent    = t('totalPoints', { value: xp });
     if (winPoints)         winPoints.textContent         = xp;
+  }
+
+  function applyLanguage(nextLanguage) {
+    language = nextLanguage === 'ru' ? 'ru' : 'en';
+    document.documentElement.lang = language;
+    document.querySelectorAll('[data-i18n]').forEach((element) => {
+      const value = t(element.dataset.i18n);
+      if (value.includes('<strong>')) element.innerHTML = value;
+      else element.textContent = value;
+    });
+    document.querySelectorAll('.help-btn').forEach((button) => {
+      button.title = t('howTo');
+      button.setAttribute('aria-label', t('howTo'));
+    });
+    document.querySelectorAll('.ad-btn').forEach((button) => { button.textContent = t('adReward'); });
+    updateTotalPointsViews();
+    if (roundActive) {
+      setInfo();
+      buildHints();
+    }
   }
 
   // ---------- Dictionaries (NEW) ----------
@@ -145,7 +216,8 @@ function shuffleWord(w) {
         BY_LEVEL_LEN[lvl][L].push(w);
       }
     }catch(e){
-      console.error(e);
+      console.error('[Learndle] Dictionary loading failed', e);
+      throw e;
     }
     META_MAP.clear();
   for (const e of META) {
@@ -197,7 +269,8 @@ function shuffleWord(w) {
       window.__LEARNDLE_CORE_READY = true;
       window.dispatchEvent(new Event('LEARNDLE_CORE_READY'));
 }
-
+    }).catch(() => {
+      startBtn.disabled = true;
     });
 
     levelSel.addEventListener('change', ()=>{
@@ -267,7 +340,7 @@ document.addEventListener('keydown', (e) => {
   // универсальная кнопка
   const modalOkBtn = document.getElementById('modal-ok');
   if (modalOkBtn) {
-    modalOkBtn.textContent = opts.okText || 'ОК';
+    modalOkBtn.textContent = opts.okText || t('ok');
     modalOkBtn.onclick = () => {
       hideModal();
       if (typeof opts.onOk === 'function') opts.onOk();
@@ -277,7 +350,7 @@ document.addEventListener('keydown', (e) => {
   // показать нужный экран
   switch (type) {
     case 'howto':
-      if (modalTitle) modalTitle.textContent = 'Как играть?';
+      if (modalTitle) modalTitle.textContent = t('howTo');
       howtoScreen?.classList.remove('hidden');
       break;
 
@@ -287,7 +360,7 @@ document.addEventListener('keydown', (e) => {
 
     case 'word':
       wordScreen?.classList.remove('hidden');
-      if (modalTitle) modalTitle.textContent = 'Информация о слове';
+      if (modalTitle) modalTitle.textContent = t('wordInfo');
       buildWordInfo((opts.word || '').toLowerCase());
       break;
   }
@@ -304,13 +377,13 @@ document.addEventListener('keydown', (e) => {
       const ex  = meta['Example sentence'] || meta['Example Sentence'] || '—';
       const syn = meta['Synonym'] || '—';
       const ant = meta['Antonym'] || '—';
-      html += `<p><strong>Часть речи:</strong> ${pos || '—'}</p>`;
-      html += `<p><strong>Определение:</strong> ${def || '—'}</p>`;
-      html += `<p><strong>Пример предложения:</strong> ${ex || '—'}</p>`;
-      html += `<p><strong>Синоним:</strong> ${syn || '—'}</p>`;
-      html += `<p><strong>Антоним:</strong> ${ant || '—'}</p>`;
+      html += `<p><strong>${t('partOfSpeech')}:</strong> ${pos || '—'}</p>`;
+      html += `<p><strong>${t('definition')}:</strong> ${def || '—'}</p>`;
+      html += `<p><strong>${t('example')}:</strong> ${ex || '—'}</p>`;
+      html += `<p><strong>${t('synonym')}:</strong> ${syn || '—'}</p>`;
+      html += `<p><strong>${t('antonym')}:</strong> ${ant || '—'}</p>`;
     } else {
-      html += `<p>Нет информации по слову.</p>`;
+      html += `<p>${t('noInfo')}</p>`;
     }
     wordContent.innerHTML = html;
     // НЕ обязательный вариант
@@ -340,7 +413,7 @@ document.addEventListener('keydown', (e) => {
     const cost = base * (revealCount + 1);
     btn.dataset.cost = String(cost);
     const costSpan = btn.querySelector('.cost');
-    if(costSpan) costSpan.textContent = `(${cost} pts)`;
+    if(costSpan) costSpan.textContent = `(${cost} ${t('pointsShort')})`;
     if(lockedPositions.size >= state.len){
       btn.dataset.has = '0';
       btn.disabled = true;
@@ -406,9 +479,10 @@ document.addEventListener('keydown', (e) => {
   function revealWin(){
     const total = getXP();
     setXP(total);
-    if(winMessage) winMessage.innerHTML = `Все буквы открыты! Слово было <span class="icon-btn">${state.answer.toUpperCase()}</span>`;
+    if(winMessage) winMessage.innerHTML = t('revealed', { word: state.answer.toUpperCase() });
     if(winPoints) winPoints.textContent = total;
     show(winScreen);
+    finishRound('revealed');
     // attach click to show word info
     const span = winMessage ? winMessage.querySelector('.icon-btn') : null;
     if(span){
@@ -422,6 +496,26 @@ document.addEventListener('keydown', (e) => {
     elShow.classList.remove('hidden');
   }
 
+  function beginRound() {
+    roundActive = true;
+    roundEndReported = false;
+    window.dispatchEvent(new CustomEvent('learndle:round-start'));
+  }
+
+  function finishRound(result) {
+    if (roundEndReported) return;
+    roundActive = false;
+    roundEndReported = true;
+    window.dispatchEvent(new CustomEvent('learndle:round-end', {
+      detail: { result, level: state.level, length: state.len }
+    }));
+  }
+
+  function leaveRound() {
+    roundActive = false;
+    window.dispatchEvent(new CustomEvent('learndle:menu'));
+  }
+
   /**
    * Start a new round using the current level and length. Resets the round state,
    * selects a new answer, rebuilds the board, hints and keyboard, and shows the
@@ -433,7 +527,7 @@ document.addEventListener('keydown', (e) => {
     try{
       state.answer = chooseAnswer(level, len);
     }catch(e){
-      showModal('alert', { title: 'Нет слов', message: 'Попробуй другой уровень или слова другой длины.' });
+      showModal('alert', { title: t('noWords'), message: t('tryAnotherSetting') });
       return;
     }
     // Reset round variables
@@ -454,6 +548,8 @@ document.addEventListener('keydown', (e) => {
     // Fill any locked positions (none at start)
     fillLockedPositions(0);
     show(gameScreen);
+    beginRound();
+    fitGameScreen();
   }
 
   // Выбор ответа: сперва словари, затем fallback к демо-банку
@@ -516,8 +612,8 @@ document.addEventListener('keydown', (e) => {
 }
 
   function setInfo(){
-  gameSettings.textContent = `${state.level} • букв в слове: ${state.len}`;
-  scoreDisplay.textContent = `Текущая игра: ${state.points} очков (x${state.mult})`;
+  gameSettings.textContent = t('gameSettings', { level: state.level, length: state.len });
+  scoreDisplay.textContent = t('currentGame', { points: state.points, mult: state.mult });
   }
 
 
@@ -550,6 +646,7 @@ document.addEventListener('keydown', (e) => {
   }
 
   function onKey(k){
+    if(inputPaused || !roundActive) return;
     if(k === 'ENTER') { submit(); return; }
     if(k === '⌫'){
       // remove previous non-locked letter
@@ -638,21 +735,21 @@ document.addEventListener('keydown', (e) => {
     const base = SCORE[state.level] ? SCORE[state.level][0] : 0;
     // Compose list of hint definitions
     const list = [];
-    list.push({type:'pos', label:'Часть речи', text: pos, cost: base * 1});
-    list.push({type:'ex',  label:'Пример предложения', text: ex, cost: base * 2});
+    list.push({type:'pos', label:t('partOfSpeech'), text: pos, cost: base * 1});
+    list.push({type:'ex',  label:t('example'), text: ex, cost: base * 2});
    // стало: объединяем в одну кнопку
     if (hasAnt || hasSyn) {
       const both  = hasAnt && hasSyn;
-      const label = both ? 'Синоним / Антоним' : (hasAnt ? 'Антоним' : 'Синоним');
+      const label = both ? t('synonymAntonym') : (hasAnt ? t('antonym') : t('synonym'));
       const text  = both ? `${ant} / ${syn}` : (hasAnt ? ant : syn);
       list.push({ type: 'rel', label, text, cost: base * 3 });
     }
     // Reveal letter: include if either synonym or antonym missing
-    list.push({type: 'rev', label: 'Открыть букву', cost: base * 4});
+    list.push({type: 'rev', label: t('revealLetter'), cost: base * 4});
     // Definition always
-    list.push({type:'def', label:'Определение', text: def, cost: base * 5});
+    list.push({type:'def', label:t('definition'), text: def, cost: base * 5});
     // Scramble always
-    list.push({type:'scr', label:'Показать буквы', text: null, cost: base * 6});
+    list.push({type:'scr', label:t('showLetters'), text: null, cost: base * 6});
 
     // Build buttons for each hint
     list.forEach(h => {
@@ -664,7 +761,7 @@ document.addEventListener('keydown', (e) => {
       const has = (h.type === 'scr' || h.type === 'rev') ? true : !!(h.text);
       btn.dataset.has = has ? '1' : '0';
       // Compose inner HTML with label and cost
-      btn.innerHTML = `${h.label}<span class="cost">(${h.cost} pts)</span>`;
+      btn.innerHTML = `${h.label}<span class="cost">(${h.cost} ${t('pointsShort')})</span>`;
       // Initially no hint is used except reveal (which can be reused)
       btn.dataset.used = '0';
       // Disabled state: if not available or XP insufficient (handled in refreshHintAffordability)
@@ -751,8 +848,8 @@ function submit(){
   const filled = rowArr.filter(ch => ch && /^[A-Z]$/.test(ch)).length;
   if (filled < state.len) {
     showModal('alert', {
-      title: 'Заполните слово',
-      message: `Введите слово длиной: ${state.len}`
+      title: t('fillWord'),
+      message: t('enterLength', { length: state.len })
     });
     return;
   }
@@ -760,16 +857,16 @@ function submit(){
   const guess = rowArr.join('').toLowerCase();
   if (/[^a-z]/.test(guess)) {
     showModal('alert', {
-      title: 'Недопустимые символы',
-      message: 'Используйте только буквы A-Z.'
+      title: t('invalidChars'),
+      message: t('onlyLetters')
     });
     return;
   }
 
   if (typeof isValidGuess === 'function' && !isValidGuess(guess)) {
     showModal('alert', {
-      title: 'Нет в словаре',
-      message: 'Этого слова нет в словаре, попробуйте другое.'
+      title: t('notFound'),
+      message: t('tryAnother')
     });
     return;
   }
@@ -784,10 +881,11 @@ function submit(){
     setXP(total);
     // Build message with clickable word
     if(winMessage){
-      winMessage.innerHTML = `Вы отгадали слово \<span class="icon-btn">${state.answer.toUpperCase()}</span>\ Вы получили ${earned} очков.`;
+      winMessage.innerHTML = t('guessed', { word: state.answer.toUpperCase(), points: earned });
     }
     if(winPoints) winPoints.textContent  = total;
     show(winScreen);
+    finishRound('win');
     // attach click handler to answer word to show info
     const span = winMessage ? winMessage.querySelector('.icon-btn') : null;
     if(span){
@@ -809,25 +907,27 @@ function submit(){
   }
   if (state.tries <= 0){
     showModal('alert', {
-      title: 'Не осталось попыток',
-      message: `Словом было "${state.answer.toUpperCase()}".`,
+      title: t('noTries'),
+      message: t('wordWas', { word: state.answer.toUpperCase() }),
       onOk: () => {
         updateTotalPointsViews();
         show(startScreen);
+        leaveRound();
       }
     });
+    finishRound('lose');
   }
 }
 
 
   // ---------- Start / Next ----------
-  startBtn.onclick = () => {
+  function startSelectedRound() {
     state.level = levelSel.value;
     state.len   = +lengthSel.value;
     try{
       state.answer = chooseAnswer(state.level, state.len);
     }catch(e){
-      showModal('alert', { title: 'Нет слов', message: 'Выберите другой уровень или длину слова.' });
+      showModal('alert', { title: t('noWords'), message: t('chooseAnother') });
       return;
     }
     // reset round
@@ -848,18 +948,37 @@ function submit(){
     // Fill locked positions for first row (in case reveal used previously)
     fillLockedPositions(0);
     show(gameScreen);
-  };
+    beginRound();
+    fitGameScreen();
+  }
 
-  nextBtn.onclick = () => {
-    // Start a new round with current settings
-    startSameLevelRound();
-  };
+  async function requestRoundTransition(transition, button) {
+    if (roundTransitionPending) return;
+    roundTransitionPending = true;
+    const wasDisabled = button.disabled;
+    button.disabled = true;
+    try {
+      if (window.LearndlePlatform?.requestNextRound) {
+        await window.LearndlePlatform.requestNextRound(transition);
+      } else {
+        transition();
+      }
+    } finally {
+      button.disabled = wasDisabled;
+      roundTransitionPending = false;
+    }
+  }
+
+  startBtn.onclick = () => requestRoundTransition(startSelectedRound, startBtn);
+
+  nextBtn.onclick = () => requestRoundTransition(startSameLevelRound, nextBtn);
 
   // Home button: return to start screen
   document.querySelectorAll('#home-btn, .home-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     updateTotalPointsViews();
     show(startScreen);
+    leaveRound();
   });
 });
 
@@ -876,24 +995,29 @@ function submit(){
     if(modalOkBtn) modalOkBtn.addEventListener('click', hideModal);
     if(modalClose) modalClose.addEventListener('click', hideModal);
   })();
+
+  window.LearndleCore = Object.freeze({
+    setLanguage: applyLanguage,
+    setPlayEnabled(enabled) {
+      startBtn.disabled = !enabled;
+    },
+    setPaused(paused) {
+      inputPaused = Boolean(paused);
+      document.body.classList.toggle('game-paused', inputPaused);
+    },
+    isRoundActive: () => roundActive,
+    addPoints(amount) {
+      setXP(getXP() + amount);
+      updateTotalPointsViews();
+      refreshHintAffordability();
+    },
+    getText: t
+  });
+  applyLanguage('en');
+  window.addEventListener('resize', fitGameScreen);
 })();
 
-
-// UI scale = 1 / DPR
-(function setupUiScale(){
-  const root = document.documentElement;
-  function apply() {
-    const dpr = window.devicePixelRatio || 1;
-    root.style.setProperty('--ui-scale', String(1 / dpr));
-  }
-  apply();
-  // Пересчитать при изменении окна/экрана
-  window.addEventListener('resize', apply);
-  // DPR может меняться — слушаем через matchMedia
-  try {
-    const mq = matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`);
-    mq.addEventListener?.('change', apply);
-  } catch(e) {}
-})();
-
-
+document.addEventListener('contextmenu', (event) => event.preventDefault());
+document.addEventListener('dragstart', (event) => {
+  if (event.target instanceof HTMLImageElement) event.preventDefault();
+});
