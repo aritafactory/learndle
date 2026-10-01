@@ -75,10 +75,17 @@
       const initializedSdk = sdkResult.sdk;
       const detected = String(initializedSdk.environment?.i18n?.lang || 'en').toLowerCase().split('-')[0];
       window.LearndleCore.setLanguage(detected === 'ru' ? 'ru' : 'en');
-      if (!loadingReadySent && typeof initializedSdk.features?.LoadingAPI?.ready === 'function') {
+      if (!loadingReadySent) {
         loadingReadySent = true;
-        await initializedSdk.features.LoadingAPI.ready();
-        window.LearndleCore.setPlayEnabled(true);
+        try {
+          if (typeof initializedSdk.features?.LoadingAPI?.ready === 'function') {
+            await initializedSdk.features.LoadingAPI.ready();
+          }
+        } catch (error) {
+          console.warn('[YSDK] LoadingAPI.ready failed', error);
+        } finally {
+          window.LearndleCore.setPlayEnabled(true);
+        }
       }
     })
     .catch((error) => {
