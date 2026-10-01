@@ -17,14 +17,24 @@ body {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  -webkit-touch-callout: none;
+  overflow: hidden;
 }
 
 /* Container encapsulating all screens */
 #app {
   width: 100%;
   max-width: 900px;
-  padding: 20px;
+  padding: clamp(6px, 2vh, 20px);
   box-sizing: border-box;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.logo {
+  width: min(30rem, 80vw);
+  margin-bottom: clamp(1.5rem, 7vh, 4rem);
+  -webkit-user-drag: none;
 }
 
 /* Generic screen styles */
@@ -97,13 +107,15 @@ label {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-top: 1.25rem;
+  margin-top: clamp(4px, 1.5vh, 1.25rem);
+  width: 100%;
 }
 
 .row {
   display: flex;
   justify-content: center;
   margin-bottom: .25rem;
+  width: 100%;
 }
 
 .cell {
@@ -118,6 +130,9 @@ label {
   text-transform: uppercase;
   font-weight: bold;
   user-select: none;
+  min-width: 0;
+  flex: 0 1 45px;
+  aspect-ratio: 1;
 }
 
 /* Cell states */
@@ -156,7 +171,8 @@ label {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-top: 1.25rem;
+  margin-top: clamp(4px, 1.5vh, 1.25rem);
+  width: 100%;
 }
 
 .keyboard-row {
@@ -170,9 +186,9 @@ label {
   color: #ddd;
   border: none;
   border-radius: 4px;
-  margin: .25rem;
-  padding: 0.625rem;
-  min-width: 40px;
+  margin: clamp(1px, .5vw, .25rem);
+  padding: clamp(5px, 1.5vh, 0.625rem) clamp(4px, 1vw, 0.625rem);
+  min-width: 0;
   text-align: center;
   font-size: 1rem;
   cursor: pointer;
@@ -201,10 +217,11 @@ label {
 
 /* Hint panel styling */
 .hint-panel {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
   width: 100%;
-  margin-top: 1.25rem;
+  margin-top: clamp(4px, 1.5vh, 1.25rem);
 }
 
 /* Group score display and help button */
@@ -369,7 +386,8 @@ label {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   column-gap: 6px;
   row-gap: 6px;
-  margin-top: 1.25rem;
+  margin-top: clamp(4px, 1.5vh, 1.25rem);
+  overflow: auto;
 }
 
 .hints-list{display:flex;flex-direction:column;gap:6px;margin-top:0.5rem}
@@ -399,9 +417,22 @@ label {
     font-size: 0.8rem;
   }
   .hint-btn {
-    min-width: 120px;
+    min-width: 0;
     font-size: 0.75rem;
   }
+  .game-info { gap: 4px; flex-wrap: wrap; justify-content: center; }
+  .score-help { gap: 4px; }
+  .ad-btn { font-size: .72rem; }
+}
+
+@media (max-height: 650px) {
+  .cell { width: 31px; height: 31px; font-size: 1rem; }
+  .row, .keyboard-row { margin-bottom: 2px; }
+  .key { padding-block: 4px; font-size: .75rem; }
+  .hint-btn { min-height: 38px; padding: 4px 6px; }
+  .hint-btn .cost { font-size: .68rem; }
+  .score-display { margin-top: 2px; font-size: .8rem; }
+  .hint-output { font-size: .75rem; min-height: 0; }
 }
 
 /* ------------------------------------------------------------------------- */
@@ -463,11 +494,10 @@ label {
 
 
 /* базовое — даём контейнерам 100% высоты без vh */
-html, body { height: 100%; margin: 0; }
-#app { height: 100%; }
+html, body { height: 100%; margin: 0; overflow: hidden; }
 
 /* любой экран: растягивается на доступные 100% */
-.screen { display: none; min-height: 100%; width: 100%; }
+.screen { display: none; height: 100%; min-height: 0; width: 100%; box-sizing: border-box; }
 /* показываем активный экран */
 .screen:not(.hidden) { display: flex; }
 
@@ -475,27 +505,6 @@ html, body { height: 100%; margin: 0; }
 #start-screen, #win-screen { justify-content: center; align-items: center; }
 
 /* игра — колонкой: инфо | поле | подсказки | клавиатура */
-#game-screen { flex-direction: column; min-height: fit-content; }
+#game-screen { flex-direction: column; overflow: hidden; }
 
-
-
-:root { --ui-scale: 1; }
-
-/* масштабируем только экраны игры/старт/финиш, модалку — нет */
-.screen { transform-origin: top center; }
-
-/* Если zoom поддерживается — используем его */
-@supports (zoom: 1) {
-  .screen { zoom: var(--ui-scale); }
-}
-
-/* Фолбэк: через transform + компенсация ширины */
-@supports not (zoom: 1) {
-  .screen {
-    transform: scale(var(--ui-scale));
-    width: calc(100% / var(--ui-scale));
-  }
-}
-
-/* Модалка — неизменная (во весь вьюпорт) */
-#modal-overlay { zoom: 1 !important; transform: none !important; }
+.game-paused #game-screen { pointer-events: none; }
