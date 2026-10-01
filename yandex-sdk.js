@@ -6,6 +6,7 @@
   let sdk = null;
   let loadingReadySent = false;
   let gameplayRunning = false;
+  let platformPaused = false;
 
   const coreReady = new Promise((resolve) => {
     if (window.__LEARNDLE_CORE_READY) resolve();
@@ -13,13 +14,15 @@
   });
 
   const sdkReady = typeof window.YaGames === 'undefined'
-    ? Promise.reject(new Error('Yandex Games SDK is unavailable'))
+    ? Promise.resolve({ sdk: null, error: new Error('Yandex Games SDK is unavailable') })
     : window.YaGames.init().then((initializedSdk) => {
         sdk = initializedSdk;
-        return initializedSdk;
-      });
+        subscribeSdkEvents();
+        return { sdk: initializedSdk, error: null };
+      }).catch((error) => ({ sdk: null, error }));
 
   function setPaused(paused) {
+    platformPaused = Boolean(paused);
     window.LearndleCore?.setPaused(paused);
   }
 
@@ -53,22 +56,28 @@
     if (typeof sdk?.on !== 'function') return;
     sdk.on('game_api_pause', () => {
       setPaused(true);
-      gameplayRunning = false;
     });
     sdk.on('game_api_resume', () => {
-      resumeActiveRound();
+      setPaused(false);
     });
   }
 
   Promise.all([sdkReady, coreReady])
-    .then(async ([initializedSdk]) => {
+    .then(async ([sdkResult]) => {
+      window.LearndleCore.setPaused(platformPaused);
+      if (!sdkResult.sdk) {
+        console.info('[YSDK] Running without platform services:', sdkResult.error?.message);
+        window.LearndleCore.setPlayEnabled(true);
+        return;
+      }
+
+      const initializedSdk = sdkResult.sdk;
       const detected = String(initializedSdk.environment?.i18n?.lang || 'en').toLowerCase().split('-')[0];
       window.LearndleCore.setLanguage(detected === 'ru' ? 'ru' : 'en');
-      subscribeSdkEvents();
-      if (window.LearndleCore.isRoundActive()) gameplayStart();
       if (!loadingReadySent && typeof initializedSdk.features?.LoadingAPI?.ready === 'function') {
         loadingReadySent = true;
         await initializedSdk.features.LoadingAPI.ready();
+        window.LearndleCore.setPlayEnabled(true);
       }
     })
     .catch((error) => {

@@ -921,7 +921,7 @@ function submit(){
 
 
   // ---------- Start / Next ----------
-  startBtn.onclick = () => {
+  function startSelectedRound() {
     state.level = levelSel.value;
     state.len   = +lengthSel.value;
     try{
@@ -950,12 +950,19 @@ function submit(){
     show(gameScreen);
     beginRound();
     fitGameScreen();
-  };
+  }
 
-  nextBtn.onclick = () => {
-    if (window.LearndlePlatform?.requestNextRound) window.LearndlePlatform.requestNextRound(startSameLevelRound);
-    else startSameLevelRound();
-  };
+  function requestRoundTransition(transition) {
+    if (window.LearndlePlatform?.requestNextRound) {
+      window.LearndlePlatform.requestNextRound(transition);
+    } else {
+      transition();
+    }
+  }
+
+  startBtn.onclick = () => requestRoundTransition(startSelectedRound);
+
+  nextBtn.onclick = () => requestRoundTransition(startSameLevelRound);
 
   // Home button: return to start screen
   document.querySelectorAll('#home-btn, .home-btn').forEach(btn => {
@@ -982,6 +989,9 @@ function submit(){
 
   window.LearndleCore = Object.freeze({
     setLanguage: applyLanguage,
+    setPlayEnabled(enabled) {
+      startBtn.disabled = !enabled;
+    },
     setPaused(paused) {
       inputPaused = Boolean(paused);
       document.body.classList.toggle('game-paused', inputPaused);
