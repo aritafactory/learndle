@@ -58,6 +58,7 @@ let META_MAP = new Map();
   let inputPaused = false;
   let roundActive = false;
   let roundEndReported = false;
+  let roundTransitionPending = false;
 
   // Reveal hint configuration and state
   const REVEAL_BASE_COST = { A1:40, A2:80, B1:200, B2:240, C1:440, C2:480 };
@@ -952,17 +953,26 @@ function submit(){
     fitGameScreen();
   }
 
-  function requestRoundTransition(transition) {
-    if (window.LearndlePlatform?.requestNextRound) {
-      window.LearndlePlatform.requestNextRound(transition);
-    } else {
-      transition();
+  async function requestRoundTransition(transition, button) {
+    if (roundTransitionPending) return;
+    roundTransitionPending = true;
+    const wasDisabled = button.disabled;
+    button.disabled = true;
+    try {
+      if (window.LearndlePlatform?.requestNextRound) {
+        await window.LearndlePlatform.requestNextRound(transition);
+      } else {
+        transition();
+      }
+    } finally {
+      button.disabled = wasDisabled;
+      roundTransitionPending = false;
     }
   }
 
-  startBtn.onclick = () => requestRoundTransition(startSelectedRound);
+  startBtn.onclick = () => requestRoundTransition(startSelectedRound, startBtn);
 
-  nextBtn.onclick = () => requestRoundTransition(startSameLevelRound);
+  nextBtn.onclick = () => requestRoundTransition(startSameLevelRound, nextBtn);
 
   // Home button: return to start screen
   document.querySelectorAll('#home-btn, .home-btn').forEach(btn => {

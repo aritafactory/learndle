@@ -7,6 +7,7 @@
   let loadingReadySent = false;
   let gameplayRunning = false;
   let platformPaused = false;
+  let transitionPending = false;
 
   const coreReady = new Promise((resolve) => {
     if (window.__LEARNDLE_CORE_READY) resolve();
@@ -201,15 +202,22 @@
   }
 
   async function requestNextRound(continueTransition) {
-    const credits = getCredits();
-    if (credits >= 0.5) {
-      const result = await showFullscreenAd();
-      if (result.wasShown) setCredits(getCredits() - 0.5);
-    } else if (credits >= 0.25) {
-      const result = await showAdPrompt();
-      if (result.watched || result.skipped) setCredits(getCredits() - 0.25);
+    if (transitionPending) return false;
+    transitionPending = true;
+    try {
+      const credits = getCredits();
+      if (credits >= 0.5) {
+        const result = await showFullscreenAd();
+        if (result.wasShown) setCredits(getCredits() - 0.5);
+      } else if (credits >= 0.25) {
+        const result = await showAdPrompt();
+        if (result.watched || result.skipped) setCredits(getCredits() - 0.25);
+      }
+      continueTransition();
+      return true;
+    } finally {
+      transitionPending = false;
     }
-    continueTransition();
   }
 
   window.addEventListener('learndle:round-start', gameplayStart);
